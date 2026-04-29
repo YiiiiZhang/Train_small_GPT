@@ -57,6 +57,6 @@ def validate_bpe(tokenizer_path, valid_file_path):
     print(f"UNK 数量: {unk_count}")
 
 if __name__ == "__main__":
-    conf = json.load(open('../config.json',"r"))
+    conf = json.load(open('./config.json',"r"))
     trian_tokenizer(conf['train_para'],conf['datasets']['trainset'],conf['save_path'])
     validate_bpe(conf['save_path'], conf['datasets']['validset'])
