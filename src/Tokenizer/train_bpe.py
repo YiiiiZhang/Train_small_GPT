@@ -9,7 +9,7 @@ from tokenizers.decoders import ByteLevel as ByteLevelDecoder
 
 def trian_tokenizer(hyper_para,trainset_dir,tokenizer_path):
     #model_initialize
-    tokenizer = Tokenizer(unk_token = hyper_para["unk_token"])
+    tokenizer = Tokenizer(BPE(unk_token = hyper_para["unk_token"]))
     #配置 Pre-tokenizer 和 Decoder;add_prefix_space=False 意味着不强制在每个句首加空格
     tokenizer.pre_tokenizer = ByteLevel(add_prefix_space=False)
     tokenizer.decoder = ByteLevelDecoder()
