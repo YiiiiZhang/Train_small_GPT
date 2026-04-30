@@ -7,7 +7,7 @@
     },
     "datasets":{
         "trainset":"../../DATA/Tinystories/TinyStoriesV2-GPT4-train.txt",
-        "validset":"../../DATA/Tinystories/TinyStoriesV2-GPT4-train.txt"
+        "validset":"../../DATA/Tinystories/TinyStoriesV2-GPT4-valid.txt"
     },
     "save_path":"../../tinystories_bpe.json"
    

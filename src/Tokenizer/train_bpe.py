@@ -66,5 +66,5 @@ def validate_bpe(tokenizer_path, valid_file_path):
 
 if __name__ == "__main__":
     conf = json.load(open('./config.json',"r"))
-    trian_tokenizer(conf['train_para'],conf['datasets']['trainset'],conf['save_path'])
+    #trian_tokenizer(conf['train_para'],conf['datasets']['trainset'],conf['save_path'])
     validate_bpe(conf['save_path'], conf['datasets']['validset'])
