@@ -1,5 +1,6 @@
 import os
 import json
+import numpy as np
 import random
 from datasets import load_from_disk
 from tokenizers import Tokenizer
@@ -55,6 +56,15 @@ def train_tokenizer(bpe_para, dataset_paras, tokenizer_path):
 
     tokenizer.save(tokenizer_path)
     print(f"Done! Tokenizer saved to {tokenizer_path}")
+
+
+def prepare_memmap_datasets(tokenizer, text_iterator, output_path):
+    os.makedirs(output_path, exist_ok=True)
+    train_filepath = os.path.join(output_path, "train.bin")
+    train_filepath = os.path.join(output_path, "train.bin")
+    train_tokens_count = 0
+    val_tokens_count = 0
+
 
 if __name__ == "__main__":
     conf = json.load(open("./config.json"))
