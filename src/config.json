@@ -6,16 +6,10 @@
         "unk_token":"<UNK>"
     },
     "datasets":{
-        "root_dit":"/dss/dssmcmlfs01/pn25ju/pn25ju-dss-0000/Datasets",
-        "TinyStories":{
-            "trainset":"train",
-            "validset":"validation"
-        },
-        "openwebtext":{
-            "trainset":"openwebtext",
-            "validset":"openwebtext"
-        }
+        "root_dir":"/dss/dssmcmlfs01/pn25ju/pn25ju-dss-0000/Datasets",
+        "TinyStories":"TinyStories",
+        "openwebtext":"openwebtext"
     },
-    "save_path":"../../tinystories_bpe.json"
+    "save_path":"./Tokenizer/openwebtext_bpe.json"
    
 }

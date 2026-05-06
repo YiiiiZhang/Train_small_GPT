@@ -24,7 +24,8 @@ class LLamaAttension(nn.Module):
         self.dim = dim
         self.n_heads = n_heads
         self.head_dim = dim//n_heads
-        assert self.head_dim * n_heads == dim, "dim 必须能被 n_heads 整除"
+        assert self.head_dim * n_heads == dim, "dim 必须能被 n_heads 整除" 
+        # dim*dim * 4
         self.wq = nn.Linear(dim,n_heads*self.head_dim,bias=False)
         self.wk = nn.Linear(dim,n_heads*self.head_dim,bias=False)
         self.wv = nn.Linear(dim,n_heads*self.head_dim,bias=False)
