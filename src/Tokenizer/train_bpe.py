@@ -20,7 +20,6 @@ def mixed_corpus_iterator(tiny_path,owe_path,sample_size=200000):
         # 随机决定从哪个数据集拿一条数据
         if random.random() < 0.5:
             try:
-                # 假设文本所在的列名为 'text'
                 yield next(iter_tiny)['text']
             except StopIteration:
                 pass
@@ -39,7 +38,6 @@ def train_tokenizer(bpe_para, dataset_paras, tokenizer_path):
     tokenizer.pre_tokenizer = ByteLevel(add_prefix_space=False)
     tokenizer.decoder = ByteLevelDecoder()
 
-    # 5. 配置训练器
     trainer = BpeTrainer(
         vocab_size=bpe_para["vocab_size"],
         min_frequency=bpe_para["min_frequency"],
@@ -47,7 +45,6 @@ def train_tokenizer(bpe_para, dataset_paras, tokenizer_path):
         initial_alphabet=ByteLevel.alphabet()
     )
 
-    # 6. 开始训练 (关键修改：从迭代器训练)
     tokenizer.train_from_iterator(
         mixed_corpus_iterator(
             tiny_path=os.path.join(dataset_paras['root_dir'], dataset_paras['TinyStories']),
@@ -56,7 +53,6 @@ def train_tokenizer(bpe_para, dataset_paras, tokenizer_path):
         trainer=trainer, 
     )
 
-    # 7. 保存结果
     tokenizer.save(tokenizer_path)
     print(f"Done! Tokenizer saved to {tokenizer_path}")
 
