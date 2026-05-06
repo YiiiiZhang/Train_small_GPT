@@ -50,6 +50,6 @@ if __name__ == "__main__":
     # 这里的路径是你之前 save_to_disk 的位置
     train_tokenizer(
         hyper_para=conf['train_para'],
-        trainset_dir=os.path.join(conf['datasets']['root_dir'], conf['datasets']['openwebtext']),
+        dataset_dir=os.path.join(conf['datasets']['root_dir'], conf['datasets']['openwebtext']),
         tokenizer_path=conf['save_path']
     )
