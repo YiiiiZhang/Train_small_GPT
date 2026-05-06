@@ -1,5 +1,6 @@
 import os
 import json
+import random
 from datasets import load_from_disk
 from tokenizers import Tokenizer
 from tokenizers.models import BPE
@@ -7,22 +8,32 @@ from tokenizers.trainers import BpeTrainer
 from tokenizers.pre_tokenizers import ByteLevel
 from tokenizers.decoders import ByteLevel as ByteLevelDecoder
 
-def train_tokenizer(hyper_para, dataset_dir, tokenizer_path):
-    # 1. 加载本地 Arrow 数据集
-    dataset = load_from_disk(dataset_dir)
-    
-    # 2. 定义数据迭代器 (Generator)
-    # 这样可以避免将整个数据集一次性加载到内存中
-    def batch_iterator(batch_size=1000):
-        # 假设数据在 'train' 分片中，openwebtext 通常直接是 Dataset 对象或包含在 'train' 中
-        # 如果 load_from_disk 得到的是 DatasetDict，请确保指向具体分片，如 dataset["train"]
-        target_dataset = dataset["train"] if "train" in dataset else dataset
-        
-        for i in range(0, len(target_dataset), batch_size):
-            yield target_dataset[i : i + batch_size]["text"]
+def mixed_corpus_iterator(tiny_path,owe_path,sample_size=200000):
+    """
+    load dataset from disk and yield text data for tokenizer training
+    """
+    ds_tiny = load_from_disk(tiny_path)
+    ds_owe = load_from_disk(owe_path)
+    iter_tiny = iter(ds_tiny["train"])
+    iter_owt = iter(ds_owe["train"])
+    for _ in range(sample_size):
+        # 随机决定从哪个数据集拿一条数据
+        if random.random() < 0.5:
+            try:
+                # 假设文本所在的列名为 'text'
+                yield next(iter_tiny)['text']
+            except StopIteration:
+                pass
+        else:
+            try:
+                yield next(iter_owt)['text']
+            except StopIteration:
+                pass
 
+
+def train_tokenizer(bpe_para, dataset_paras, tokenizer_path):
     # 3. 初始化分词器模型
-    tokenizer = Tokenizer(BPE(unk_token=hyper_para["unk_token"]))
+    tokenizer = Tokenizer(BPE(unk_token=bpe_para["unk_token"]))
 
     # 4. 配置 Pre-tokenizer 和 Decoder
     tokenizer.pre_tokenizer = ByteLevel(add_prefix_space=False)
@@ -30,14 +41,20 @@ def train_tokenizer(hyper_para, dataset_dir, tokenizer_path):
 
     # 5. 配置训练器
     trainer = BpeTrainer(
-        vocab_size=hyper_para["vocab_size"],
-        min_frequency=hyper_para["min_frequency"],
-        special_tokens=hyper_para["special_tokens"],
+        vocab_size=bpe_para["vocab_size"],
+        min_frequency=bpe_para["min_frequency"],
+        special_tokens=bpe_para["special_tokens"],
         initial_alphabet=ByteLevel.alphabet()
     )
 
     # 6. 开始训练 (关键修改：从迭代器训练)
-    tokenizer.train_from_iterator(batch_iterator(), trainer=trainer, length=len(dataset))
+    tokenizer.train_from_iterator(
+        mixed_corpus_iterator(
+            tiny_path=os.path.join(dataset_paras['root_dir'], dataset_paras['TinyStories']),
+            owe_path=os.path.join(dataset_paras['root_dir'], dataset_paras['openwebtext'])
+        ),
+        trainer=trainer, 
+    )
 
     # 7. 保存结果
     tokenizer.save(tokenizer_path)
@@ -47,9 +64,8 @@ def train_tokenizer(hyper_para, dataset_dir, tokenizer_path):
 if __name__ == "__main__":
     conf = json.load(open("./config.json"))
 
-    # 这里的路径是你之前 save_to_disk 的位置
     train_tokenizer(
-        hyper_para=conf['train_para'],
-        dataset_dir=os.path.join(conf['datasets']['root_dir'], conf['datasets']['openwebtext']),
+        bpe_para=conf['bpe_para'],
+        dataset_paras=conf['datasets'],
         tokenizer_path=conf['save_path']
     )
