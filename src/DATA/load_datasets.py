@@ -2,7 +2,7 @@ from datasets import load_dataset, DatasetDict
 import os
 # Set your local path here
 local_path = "/dss/dssmcmlfs01/pn25ju/pn25ju-dss-0000/Datasets" 
-datasets = ["roneneldan/TinyStories","Skylion007/openwebtext"]
+datasets = ["Skylion007/openwebtext","roneneldan/TinyStories"]
 # This will download and prepare the dataset in the specified folder
 for dataset_name in datasets:
     ds = load_dataset(dataset_name)
@@ -18,5 +18,5 @@ for dataset_name in datasets:
             "train": split_ds["train"],
             "val": split_ds["test"]
         })
-    new_ds.save_to_disk(dataset_dir)
+    new_ds.save_to_disk(dataset_dir,max_shard_size="2GB")
     print(f"Dataset '{dataset_name}' saved with train/val splits at: {dataset_dir}")

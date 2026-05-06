@@ -47,8 +47,8 @@ def train_tokenizer(bpe_para, dataset_paras, tokenizer_path):
 
     tokenizer.train_from_iterator(
         mixed_corpus_iterator(
-            tiny_path=os.path.join(dataset_paras['root_dir'], dataset_paras['TinyStories']),
-            owe_path=os.path.join(dataset_paras['root_dir'], dataset_paras['openwebtext'])
+            tiny_path=os.path.join(dataset_paras['root_dir'], dataset_paras['TinyStories']['train']),
+            owe_path=os.path.join(dataset_paras['root_dir'], dataset_paras['openwebtext']['train'])
         ),
         trainer=trainer, 
     )
@@ -56,7 +56,6 @@ def train_tokenizer(bpe_para, dataset_paras, tokenizer_path):
     tokenizer.save(tokenizer_path)
     print(f"Done! Tokenizer saved to {tokenizer_path}")
 
-# --- 调用示例 ---
 if __name__ == "__main__":
     conf = json.load(open("./config.json"))
 
